@@ -7,21 +7,19 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jsp.kalikapatha.dto.UserDto;
-import com.jsp.kalikapatha.repository.LearnerRepository;
-import com.jsp.kalikapatha.repository.TutorRepository;
+import com.jsp.kalikapatha.service.GeneralService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
 public class GeneralController{
 	
 	@Autowired
-	LearnerRepository learnerRepository;
-	
-	@Autowired
-	TutorRepository tutorRepository;
+	GeneralService generalService;
 	
 	@GetMapping("/")
 	public String loadhome() {
@@ -30,25 +28,22 @@ public class GeneralController{
 	
 	@GetMapping("/register")
 	public String loadRegister(UserDto userDto,Model model) {
-		model.addAttribute("userDto", userDto);
-		return "register.html";
+		return generalService.loadRegister(userDto,model);
 	}
 	
 	@PostMapping("/register")
-	public String register(@ModelAttribute @Valid UserDto userDto ,BindingResult result) {
-		if(!userDto.getConfirmPassword().equals(userDto.getPassword()))
-			result.rejectValue("confirmPassword", "error.confirmPassword", "* Password and ConfirmPassword not matching");
-		
-		if(learnerRepository.existsByMobile(userDto.getMobile()) || tutorRepository.existsByMobile(userDto.getMobile()))
-			result.rejectValue("mobile", "error.mobile","* Mobile Number Already in Use");
-		
-		if(learnerRepository.existsByEmail(userDto.getEmail()) || tutorRepository.existsByEmail(userDto.getEmail()))
-			result.rejectValue("email", "error.email", "* Email Adress Already in use");
-		
-		if(!result.hasErrors()) {
-			return "otp.html";
-		}
-		return "register.html";
+	public String register(@ModelAttribute @Valid UserDto userDto ,BindingResult result,HttpSession session) {
+		return generalService.register(userDto,result,session);
+	}
+	
+	@GetMapping("/otp")
+	public String loadOtp() {
+		return "otp.html";
+	}
+	
+	@PostMapping("/submit-otp")
+	public String submitOtp(@RequestParam int otp,HttpSession session) {
+		return generalService.confirmOtp(otp,session);
 	}
 	
 	
