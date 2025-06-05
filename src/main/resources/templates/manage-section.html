@@ -10,7 +10,7 @@
         <h3 style="color: green" th:text="${session.pass}"></h3>
 		<h3 style="color: red" th:text="${session.fail}"></h3>
 		<span th:text="${@generalService.removeMessage()}"></span>
-		<button>Add Section</button>
+		<a href="/tutor/add-section" ><button>Add Section</button></a>
 		<button>View All Sections</button>
 		<a href="/tutor/home">
 			<button>Back</button>

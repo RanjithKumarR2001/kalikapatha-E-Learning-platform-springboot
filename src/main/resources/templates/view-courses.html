@@ -5,7 +5,7 @@
 <title>view Courses</title>
 </head>
 <body>
-<div align="center">
+	<div align="center">
 		<h1>View Courses</h1>
 
 		<table border="1">
@@ -21,9 +21,10 @@
 				<td th:text="${course.description}"></td>
 				<td><span th:if="${course.paid}">Paid</span> <span
 					th:if="${!course.paid}">Free</span></td>
-				<td>
-					<button>Publish</button>
-				</td>
+				<td th:if="${!course.published}"><a
+					th:href="'/tutor/publish/'+${course.id}"><button
+							class="btn btn-primary">Publish</button></a></td>
+				<td th:if="${course.published}">Published</td>
 			</tr>
 
 		</table>
