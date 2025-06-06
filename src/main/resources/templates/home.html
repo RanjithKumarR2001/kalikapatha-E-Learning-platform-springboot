@@ -1,19 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Home</title>
+  <meta charset="UTF-8">
+  <title>Kalikapatha - E-Learning Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 400px;
+    }
+
+    h1 {
+      color: #333333;
+      margin-bottom: 30px;
+      font-size: 32px;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      font-weight: normal;
+    }
+
+    .success-message {
+      color: green;
+      font-weight: bold;
+    }
+
+    .error-message {
+      color: red;
+      font-weight: bold;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 15px 10px;
+      padding: 12px 25px;
+      background-color: #4facfe;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 30px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn:hover {
+      background-color: #00c6ff;
+      transform: translateY(-2px);
+    }
+
+    .message {
+      margin-top: 20px;
+      color: #333333;
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
-<div align="center">
-	<h1>Kalikapatha - Elearning Platform</h1>
-	
-	<h3 style="color:green" th:text="${session.pass}"></h3>
-	<h3 style="color:red" th:text="${session.fail}"></h3>
-	<span th:text="${@generalService.removeMessage()}"></span>
-	
-	<a href="/login"> <button>Login</button></a>
-	<a href="/register"><button>Register</button></a>
-</div>
+  <div class="container">
+    <h1>Kalikapatha 📚</h1>
+    <h3 class="success-message" th:text="${session.pass}"></h3>
+    <h3 class="error-message" th:text="${session.fail}"></h3>
+    <span class="message" th:text="${@generalService.removeMessage()}"></span>
+
+    <a href="/login" class="btn">Login</a>
+    <a href="/register" class="btn">Register</a>
+  </div>
 </body>
 </html>
