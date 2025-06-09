@@ -72,4 +72,9 @@ public class TutorController {
 	public String addSection(@ModelAttribute @Valid SectionDto sectionDto,BindingResult result,Model model,HttpSession session) {
 		return tutorService.addSection(sectionDto,result,model,session);
 	}
+	
+	@GetMapping("/view-sections")
+	public String viewSections(HttpSession session, Model model) {
+		return tutorService.viewSections(session, model);
+	}
 }
