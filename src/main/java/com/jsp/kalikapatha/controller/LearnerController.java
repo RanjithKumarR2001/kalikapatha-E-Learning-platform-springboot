@@ -1,8 +1,13 @@
 package com.jsp.kalikapatha.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.jsp.kalikapatha.service.LearnerService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -10,14 +15,23 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/learner")
 public class LearnerController {
 	
+	@Autowired
+	LearnerService learnerService;
+	
 	@GetMapping("/home")
 	public String loadHome(HttpSession session) {
-		if (session.getAttribute("learner") != null) {
-			return "learner-home.html";
-		} else {
-			session.setAttribute("fail", "Invalid Session, Login First");
-			return "redirect:/login";
-		}
+		return learnerService.loadHome(session);
 	}
+	
+	@GetMapping("/view-courses")
+	public String loadCourses(HttpSession session, Model model) {
+		return learnerService.loadCourses(session,model);
+	}
+	
+	@GetMapping("/enroll/{id}")
+	public String enrollCourse(HttpSession session,@PathVariable Long id,Model model) {
+		return learnerService.enrollCourse(session,id,model);
+	}
+	
 
 }

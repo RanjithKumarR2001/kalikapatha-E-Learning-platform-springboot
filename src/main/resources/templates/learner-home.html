@@ -2,15 +2,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Learner dashboard -Kalikapatha</title>
 </head>
 <body>
 <h3 style="color: green" th:text="${session.pass}"></h3>
 		<h3 style="color: red" th:text="${session.fail}"></h3>
 		<span th:text="${@generalService.removeMessage()}"></span>
-<h1>Learner Home</h1>
+         <h1>Learner Home</h1>
+         
+         <a href="/learner/view-courses"><button>See Available Courses</button></a>
+          <a href=""><button>View Enrolled Courses</button></a>
+          <a href=""><button>View Completed Courses</button></a>
+ 
 
-<a href="/logout"> <button>Logout</button> </a>
+         <a href="/logout"> <button>Logout</button> </a>
 
 </body>
 </html>
