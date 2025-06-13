@@ -1,5 +1,6 @@
 package com.jsp.kalikapatha.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -9,8 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.jsp.kalikapatha.model.Course;
+import com.jsp.kalikapatha.model.EnrolledCourse;
+import com.jsp.kalikapatha.model.EnrolledSection;
 import com.jsp.kalikapatha.model.Learner;
+import com.jsp.kalikapatha.model.Section;
 import com.jsp.kalikapatha.repository.CourseRepository;
+import com.jsp.kalikapatha.repository.EnrolledCourseRepository;
+import com.jsp.kalikapatha.repository.LearnerRepository;
+import com.jsp.kalikapatha.repository.SectionRepository;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -22,6 +29,16 @@ public class LearnerService {
 
 	@Autowired
 	CourseRepository courseRepository;
+	
+	@Autowired
+	LearnerRepository learnerRepository;
+
+	@Autowired
+	SectionRepository sectionRepository;
+
+	@Autowired
+	EnrolledCourseRepository enrolledCourseRepository;
+	
 	@Value("${razor-pay.api.key}")
 	String key;
 	@Value("${razor-pay.api.secret}")
@@ -84,9 +101,58 @@ public class LearnerService {
 					return "redirect:/learner/home";
 				}
 			}else {
+				List<Section> sections = sectionRepository.findByCourse(course);
+				List<EnrolledSection> enrolledSections = new ArrayList<EnrolledSection>();
+				for (Section section : sections) {
+					EnrolledSection enrolledSection = new EnrolledSection();
+					enrolledSection.setSection(section);
+					enrolledSections.add(enrolledSection);
+				}
+
+				EnrolledCourse enrolledCourse = new EnrolledCourse();
+				enrolledCourse.setCourse(course);
+				enrolledCourse.setEnrolledSections(enrolledSections);
+
+				learner.getEnrolledCourses().add(enrolledCourse);
+
+				learnerRepository.save(learner);
+
 				session.setAttribute("pass", "Courses Enrolled Success, Thanks " + learner.getName());
+				session.setAttribute("learner", learnerRepository.findById(learner.getId()).get());
 				return "redirect:/learner/home";
 			}
+		} else {
+			session.setAttribute("fail", "Invalid Session, Login First");
+			return "redirect:/login";
+		}
+	
+	}
+
+	public String viewEnrolledCourses(HttpSession session, Model model) {
+		if (session.getAttribute("learner") != null) {
+			Learner learner = (Learner) session.getAttribute("learner");
+
+			List<EnrolledCourse> enrolledCourses = learner.getEnrolledCourses();
+			if (enrolledCourses.isEmpty()) {
+				session.setAttribute("fail", "Not Enrolled for Any of the Courses");
+				return "redirect:/learner/home";
+			} else {
+				model.addAttribute("enrolledCourses", enrolledCourses);
+				return "view-enrolled-courses.html";
+			}
+		} else {
+			session.setAttribute("fail", "Invalid Session, Login First");
+			return "redirect:/login";
+		}
+	}
+
+	public String viewEnrolledSections(HttpSession session, Long id, Model model) {
+		if (session.getAttribute("learner") != null) {
+			EnrolledCourse enrolledCourse = enrolledCourseRepository.findById(id).get();
+			List<EnrolledSection> enrolledSections = enrolledCourse.getEnrolledSections();
+
+			model.addAttribute("enrolledSections", enrolledSections);
+			return "view-enrolled-sections.html";
 		} else {
 			session.setAttribute("fail", "Invalid Session, Login First");
 			return "redirect:/login";
